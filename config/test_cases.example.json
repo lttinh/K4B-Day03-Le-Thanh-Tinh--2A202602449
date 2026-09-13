@@ -2,36 +2,36 @@
   {
     "id": "TC01",
     "type": "direct_query",
-    "question": "Chào bạn, bạn có thể giới thiệu quy chế học vụ cơ bản của Đại học VinUni không?",
-    "expected_behavior": "Chatbot trả lời trực tiếp từ System Prompt, không cần gọi bất kỳ Tool nào.",
+    "question": "Chào bạn, bệnh viện Vinmec cung cấp những dịch vụ khám chữa bệnh cơ bản nào?",
+    "expected_behavior": "Chatbot trả lời trực tiếp từ System Prompt về các dịch vụ chung của Vinmec, không cần gọi Tool.",
     "complexity": "Low"
   },
   {
     "id": "TC02",
     "type": "single_tool_query",
-    "question": "Hãy tra cứu thông tin học vụ của sinh viên SV2026001.",
-    "expected_behavior": "Agent nhận diện nhu cầu tra cứu, tự động phát sinh Tool Call 'academic_query' với mã SV2026001.",
+    "question": "Hãy tra cứu lịch làm việc của bác sĩ chuyên khoa Tiêu hóa tại bệnh viện Vinmec Times City ngày 15/03/2026.",
+    "expected_behavior": "Agent nhận diện nhu cầu tra cứu, tự động phát sinh Tool Call 'search_doctor_schedule' với thông tin chuyên khoa Tiêu hóa.",
     "complexity": "Medium"
   },
   {
     "id": "TC03",
     "type": "appointment_booking",
-    "question": "TODO: [Học viên tự viết câu hỏi yêu cầu Agent đặt lịch hẹn tư vấn học vụ]",
-    "expected_behavior": "Agent tự động phát sinh Tool Call 'schedule_appointment' với đúng thời gian và thông tin sinh viên.",
+    "question": "Tôi muốn đặt lịch khám với TS.BS. Nguyễn Văn Bình mã bác sĩ DOC-TH-002 vào lúc 09:00 ngày 15/03/2026 cho bệnh nhân Lê Thanh Tình.",
+    "expected_behavior": "Agent tự động phát sinh Tool Call 'book_medical_appointment' với đúng thời gian, mã bác sĩ và tên bệnh nhân.",
     "complexity": "Medium"
   },
   {
     "id": "TC04",
     "type": "multi_step_reasoning",
-    "question": "TODO: [Học viên tự viết câu hỏi yêu cầu Agent suy luận ReAct đa bước (Tra cứu -> Đặt lịch với Cố vấn)]",
-    "expected_behavior": "Agent thực hiện chuỗi suy luận ReAct: Tra cứu cố vấn học tập của sinh viên trước, sau đó tiến hành đặt lịch hẹn.",
+    "question": "Tôi bị đau dạ dày và ợ chua, hãy tìm bác sĩ chuyên khoa phù hợp tại Vinmec Times City ngày 15/03/2026 và đặt lịch khám giúp bệnh nhân Lê Thanh Tình vào ca sáng.",
+    "expected_behavior": "Agent thực hiện chuỗi suy luận ReAct: Tra cứu bác sĩ chuyên khoa Tiêu hóa trước, sau đó tự động đặt lịch khám ở bước tiếp theo.",
     "complexity": "High"
   },
   {
     "id": "TC05",
     "type": "edge_case_handling",
-    "question": "TODO: [Học viên tự viết câu hỏi tra cứu mã sinh viên không tồn tại (ví dụ SV9999999)]",
-    "expected_behavior": "Agent nhận kết quả NOT_FOUND từ Tool và đưa ra phản hồi lịch sự, chính xác không bịa đặt dữ liệu.",
+    "question": "Hãy tra cứu lịch làm việc của bác sĩ có mã DOC-9999999 ngày 15/03/2026.",
+    "expected_behavior": "Agent nhận kết quả NOT_FOUND từ Tool và đưa ra phản hồi lịch sự, báo không tìm thấy bác sĩ chứ không tự bịa thông tin.",
     "complexity": "Medium"
   }
 ]

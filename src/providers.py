@@ -27,36 +27,50 @@ class BaseLLMProvider:
 
 
 class MockOfflineProvider(BaseLLMProvider):
-    """Offline Mock Provider dùng để chạy thử mà không tốn API Key"""
+    """Offline Mock Provider dùng để chạy thử mà không tốn API Key (Đã cập nhật cho Vinmec Domain)"""
     def __init__(self):
         self.model_name = "Offline-Mock-Model-2026"
 
     def generate(self, prompt: str, system_prompt: str = "") -> str:
-        return f"[Mock Chatbot Response]: Xin chào! Tôi đã nhận được câu hỏi '{prompt}'. (Chế độ Chatbot không có Tool tra cứu dữ liệu thời gian thực)."
+        return f"[Mock Chatbot Response]: Xin chào! Hệ thống y tế Vinmec đã nhận được câu hỏi: '{prompt}'."
 
     def generate_with_tools(self, prompt: str, tools_schema: List[Dict[str, Any]], system_prompt: str = "") -> Dict[str, Any]:
         prompt_lower = prompt.lower()
         
-        # Mô phỏng nhận diện intent gọi Tool
-        if "sv2026001" in prompt_lower and "đặt lịch" in prompt_lower:
+        # 1. Mô phỏng đặt lịch khám
+        if "đặt lịch" in prompt_lower or "book" in prompt_lower:
             return {
                 "type": "tool_call",
-                "tool_name": "schedule_appointment",
-                "arguments": {"student_id": "SV2026001", "datetime_str": "14:00 15/09/2026", "advisor_name": "PGS.TS Nguyễn Văn A"},
-                "thought": "Người dùng yêu cầu đặt lịch hẹn tư vấn cho sinh viên SV2026001. Tôi sẽ gọi tool schedule_appointment."
+                "tool_name": "book_medical_appointment",
+                "arguments": {
+                    "doctor_id": "DOC-TH-002", 
+                    "date": "15/03/2026", 
+                    "time_slot": "09:00",
+                    "patient_name": "Lê Thanh Tình"
+                },
+                "thought": "Người dùng yêu cầu đặt lịch khám bệnh. Tôi sẽ gọi tool book_medical_appointment."
             }
-        elif "sv2026001" in prompt_lower or "tra cứu" in prompt_lower:
+        # 2. Mô phỏng tra cứu lịch bác sĩ
+        elif "bác sĩ" in prompt_lower or "lịch làm việc" in prompt_lower or "doc-" in prompt_lower or "đau" in prompt_lower:
             return {
                 "type": "tool_call",
-                "tool_name": "academic_query",
-                "arguments": {"student_id": "SV2026001"},
-                "thought": "Người dùng muốn tra cứu thông tin học vụ của sinh viên SV2026001. Tôi sẽ gọi tool academic_query."
+                "tool_name": "search_doctor_schedule",
+                "arguments": {"specialty": "Tiêu hóa", "date": "15/03/2026", "location": "Vinmec Times City"},
+                "thought": "Người dùng muốn tra cứu lịch làm việc của bác sĩ. Tôi sẽ gọi tool search_doctor_schedule."
             }
+        # 3. Phản hồi các câu trò chuyện, cảm xúc hoặc câu hỏi xã giao (như 'tôi buồn ngủ quá')
+        elif any(w in prompt_lower for w in ["buồn ngủ", "mệt", "chào", "cảm ơn", "qua"]):
+            return {
+                "type": "text",
+                "content": "Bạn nên nghỉ ngơi một chút và lắng nghe cơ thể nhé! Ngủ đủ giấc rất quan trọng đối với sức khỏe. Nếu bạn gặp các triệu chứng mệt mỏi kéo dài hoặc cần tư vấn y tế, Vinmec luôn sẵn sàng hỗ trợ bạn.",
+                "thought": "Người dùng bày tỏ cảm xúc/trạng thái cá nhân. Phản hồi lịch sự, thân thiện dưới góc độ trợ lý y tế."
+            }
+        # 4. Phản hồi mặc định cho các câu hỏi chung khác
         else:
             return {
                 "type": "text",
-                "content": f"[Mock Agent Response]: Xin chào! Quy chế học vụ VinUni yêu cầu sinh viên tích lũy tối thiểu 120 tín chỉ và duy trì GPA trên 2.0 để tốt nghiệp.",
-                "thought": "Câu hỏi chung về quy chế học vụ, trả lời trực tiếp không cần gọi Tool."
+                "content": "Xin chào! Hệ thống Y tế Vinmec cung cấp các dịch vụ khám sức khỏe tổng quát, tầm soát bệnh lý và điều trị chuyên khoa. Bạn có thể hỏi tôi để tra cứu lịch bác sĩ hoặc đặt lịch hẹn khám.",
+                "thought": "Câu hỏi chung về dịch vụ Vinmec, trả lời trực tiếp không cần gọi Tool."
             }
 
 
@@ -89,10 +103,8 @@ class GeminiProvider(BaseLLMProvider):
 
             client = genai.Client(api_key=self.api_key)
             
-            # Chuẩn hóa function declarations cho Gemini SDK
             function_declarations = []
             for tool in tools_schema:
-                # Bỏ qua các tool schema chưa được định nghĩa hoàn chỉnh
                 if not tool.get("name") or not tool.get("parameters"):
                     continue
                 function_declarations.append({
@@ -113,7 +125,6 @@ class GeminiProvider(BaseLLMProvider):
                 config=config
             )
 
-            # Kiểm tra xem Gemini có trả về Tool Call không
             if response.function_calls:
                 call = response.function_calls[0]
                 args = dict(call.args) if hasattr(call, 'args') and call.args else {}

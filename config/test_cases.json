@@ -1,0 +1,37 @@
+[
+  {
+    "id": "TC01",
+    "type": "direct_query",
+    "question": "Chào bạn, hệ thống y tế Vinmec cung cấp các dịch vụ khám chữa bệnh và chuyên khoa chính nào?",
+    "expected_behavior": "Chatbot trả lời trực tiếp từ System Prompt, không kích hoạt Tool.",
+    "complexity": "Low"
+  },
+  {
+    "id": "TC02",
+    "type": "single_tool_query",
+    "question": "Hãy tra cứu lịch làm việc của bác sĩ chuyên khoa Tiêu hóa tại Vinmec Times City ngày 15/03/2026.",
+    "expected_behavior": "Agent gọi Tool 'search_doctor_schedule' với chuyên khoa Tiêu hóa.",
+    "complexity": "Medium"
+  },
+  {
+    "id": "TC03",
+    "type": "appointment_booking",
+    "question": "Đặt lịch khám với TS.BS. Nguyễn Văn Bình (mã DOC-TH-002) lúc 09:00 ngày 15/03/2026 cho bệnh nhân Lê Thanh Tình.",
+    "expected_behavior": "Agent gọi Tool 'book_medical_appointment' với đầy đủ thông tin đặt lịch.",
+    "complexity": "Medium"
+  },
+  {
+    "id": "TC04",
+    "type": "multi_step_reasoning",
+    "question": "Tôi bị đau dạ dày và ợ chua, hãy tra bác sĩ chuyên khoa phù hợp tại Vinmec Times City ngày 15/03/2026 và đặt lịch ca sáng giúp bệnh nhân Lê Thanh Tình.",
+    "expected_behavior": "Agent suy luận ReAct 2 bước: Tra cứu bác sĩ Tiêu hóa -> Đặt lịch khám ca sáng.",
+    "complexity": "High"
+  },
+  {
+    "id": "TC05",
+    "type": "edge_case_handling",
+    "question": "Hãy tra cứu lịch làm việc của bác sĩ có mã DOC-9999999 ngày 15/03/2026.",
+    "expected_behavior": "Agent xử lý kết quả NOT_FOUND từ Tool và phản hồi lịch sự, không bịa dữ liệu.",
+    "complexity": "Medium"
+  }
+]

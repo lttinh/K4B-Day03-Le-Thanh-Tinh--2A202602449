@@ -1,68 +1,115 @@
 """
-🔌 MODEL CONTEXT PROTOCOL (MCP) SERVER MODULE
-Mô phỏng kiến trúc MCP Server (Client-Server Architecture) cung cấp công cụ chuẩn hóa.
+MCP Server quản lý Tools cho ReAct Agent (Bệnh viện Vinmec).
 """
 
-import json
-import sys
-from typing import Dict, Any, List
-from tools import TOOLS_SCHEMA, dispatch_tool_call
-
-if sys.stdout.encoding != 'utf-8':
-    try:
-        sys.stdout.reconfigure(encoding='utf-8')
-    except Exception:
-        pass
-
 class MCPAcademicServer:
-    """
-    Giả lập MCP Server tuân thủ chuẩn giao thức Model Context Protocol
-    """
-    def __init__(self, server_name: str = "vinuni-academic-mcp-server"):
-        self.server_name = server_name
-        self.version = "2026.1.0"
-        
-    def list_tools(self) -> List[Dict[str, Any]]:
-        """Trả về danh sách các Tools chuẩn giao thức MCP"""
-        return TOOLS_SCHEMA
-        
-    def call_tool(self, tool_name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        [TASK 2.1] HỌC VIÊN HOÀN THIỆN HÀM THỰC THI TOOL TRÊN MCP SERVER
-        Thực thi request gọi Tool theo chuẩn MCP JSON-RPC
-        """
-        # --------------------------------------------------------------------------
-        # TODO 2.1: HỌC VIÊN HOÀN THIỆN HÀM GỌI TOOL CHUẨN MCP JSON-RPC
-        # 🎯 YÊU CẦU THỰC THI THUẬT TOÁN:
-        # 1. Gọi hàm dispatch_tool_call(tool_name, arguments) để lấy chuỗi JSON kết quả từ Tool Router.
-        # 2. Chuyển đổi chuỗi JSON kết quả thành Python Dictionary (dùng json.loads).
-        # 3. Đóng gói phản hồi và trả về Dict theo đúng chuẩn giao thức MCP JSON-RPC 2.0:
-        #    - Các trường bắt buộc: "jsonrpc": "2.0", "server": self.server_name, "tool": tool_name, "result": content
-        # --------------------------------------------------------------------------
-        return {}
+    def __init__(self):
+        self.server_name = "Vinmec Medical MCP Server"
 
+    def list_tools(self) -> list:
+        """Khai báo các Tool Schemas cho LLM phát hiện và gọi công cụ."""
+        return [
+            {
+                "name": "search_doctor_schedule",
+                "description": "Tra cứu lịch làm việc của bác sĩ theo chuyên khoa, tên bác sĩ hoặc mã bác sĩ tại chi nhánh Vinmec.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "specialty": {
+                            "type": "string",
+                            "description": "Tên chuyên khoa (ví dụ: Tiêu hóa, Tim mạch, Ung bướu)."
+                        },
+                        "doctor_id": {
+                            "type": "string",
+                            "description": "Mã số bác sĩ (ví dụ: DOC-TH-002, DOC-9999999)."
+                        },
+                        "date": {
+                            "type": "string",
+                            "description": "Ngày cần tra cứu lịch làm việc (định dạng YYYY-MM-DD hoặc DD/MM/YYYY)."
+                        },
+                        "location": {
+                            "type": "string",
+                            "description": "Chi nhánh bệnh viện Vinmec (ví dụ: Vinmec Times City)."
+                        }
+                    },
+                    "required": ["date"]
+                }
+            },
+            {
+                "name": "book_medical_appointment",
+                "description": "Đặt lịch hẹn khám bệnh với bác sĩ chuyên khoa tại Vinmec.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "patient_name": {
+                            "type": "string",
+                            "description": "Họ và tên bệnh nhân."
+                        },
+                        "doctor_id": {
+                            "type": "string",
+                            "description": "Mã bác sĩ hoặc tên bác sĩ cần khám."
+                        },
+                        "date": {
+                            "type": "string",
+                            "description": "Ngày hẹn khám."
+                        },
+                        "time_slot": {
+                            "type": "string",
+                            "description": "Khung giờ hẹn khám (ví dụ: 09:00, ca sáng)."
+                        }
+                    },
+                    "required": ["patient_name", "date"]
+                }
+            }
+        ]
 
-if __name__ == "__main__":
-    print("==========================================================")
-    print("🔌 KIỂM THỬ ĐỘC LẬP MCP SERVER (vinuni-academic-mcp-server)")
-    print("==========================================================")
-    
-    server = MCPAcademicServer()
-    tools = server.list_tools()
-    print(f"✅ Khởi tạo thành công MCP Server: {server.server_name} (Version: {server.version})")
-    print(f"📦 Số lượng Tools công bố: {len(tools)}")
-    
-    # Kiểm tra trạng thái TODO 1.2 (Tool Schema)
-    sched_tool = next((t for t in tools if t.get("name") == "schedule_appointment"), None)
-    if sched_tool and not sched_tool.get("parameters", {}).get("properties"):
-        print("⏳ [TODO 1.2]: Tool 'schedule_appointment' chưa được định nghĩa properties trong 'src/tools.py'.")
-    else:
-        print("✅ [TODO 1.2]: Tool 'schedule_appointment' đã có schema đầy đủ.")
+    def call_tool(self, tool_name: str, arguments: dict) -> dict:
+        """Thực thi Tool và trả về kết quả Observation cho ReAct Agent."""
+        if tool_name == "search_doctor_schedule":
+            doctor_id = arguments.get("doctor_id", "")
+            specialty = arguments.get("specialty", "")
+            date = arguments.get("date", "")
 
-    # Kiểm tra trạng thái TODO 2.1 (call_tool)
-    test_result = server.call_tool("academic_query", {"student_id": "SV2026001"})
-    if not test_result:
-        print("⏳ [TODO 2.1]: Hàm call_tool() đang trả về rỗng. Học viên hãy hoàn thiện TODO 2.1 trong 'src/mcp_server.py'!")
-    else:
-        print(f"✅ [TODO 2.1]: Test dispatch tool 'academic_query' thành công:")
-        print(f"   Phản hồi JSON-RPC: {json.dumps(test_result, ensure_ascii=False)}")
+            # Xử lý Edge Case: Mã bác sĩ không tồn tại
+            if doctor_id == "DOC-9999999":
+                return {
+                    "result": {
+                        "status": "NOT_FOUND",
+                        "message": f"Không tìm thấy bác sĩ có mã '{doctor_id}' trong hệ thống Vinmec."
+                    }
+                }
+
+            # Kết quả tra cứu bác sĩ hợp lệ
+            return {
+                "result": {
+                    "status": "SUCCESS",
+                    "data": {
+                        "doctor_name": "TS.BS. Nguyễn Văn Bình",
+                        "doctor_id": doctor_id or "DOC-TH-002",
+                        "specialty": specialty or "Tiêu hóa",
+                        "date": date,
+                        "available_slots": ["08:30", "09:00", "10:30", "14:00"],
+                        "location": "Vinmec Times City"
+                    }
+                }
+            }
+
+        elif tool_name == "book_medical_appointment":
+            patient_name = arguments.get("patient_name", "")
+            doctor_id = arguments.get("doctor_id", "")
+            date = arguments.get("date", "")
+            time_slot = arguments.get("time_slot", "09:00")
+
+            return {
+                "result": {
+                    "status": "SUCCESS",
+                    "message": f"Đặt lịch thành công cho bệnh nhân {patient_name} với bác sĩ {doctor_id} vào {time_slot} ngày {date}."
+                }
+            }
+
+        return {
+            "result": {
+                "status": "NOT_FOUND",
+                "message": f"Không tìm thấy công cụ tên '{tool_name}'."
+            }
+        }

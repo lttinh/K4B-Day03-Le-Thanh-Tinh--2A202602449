@@ -1,29 +1,130 @@
 [
   {
     "step": 1,
-    "query": "Chào bạn, bạn có thể giới thiệu quy chế học vụ cơ bản của Đại học VinUni không?",
+    "query": "Chào bạn, hệ thống y tế Vinmec cung cấp các dịch vụ khám chữa bệnh và chuyên khoa chính nào?",
     "action_type": "FINAL_ANSWER",
-    "thought": "Câu hỏi chung về quy chế học vụ, trả lời trực tiếp không cần gọi Tool.",
-    "output": "[Mock Agent Response]: Xin chào! Quy chế học vụ VinUni yêu cầu sinh viên tích lũy tối thiểu 120 tín chỉ và duy trì GPA trên 2.0 để tốt nghiệp.",
-    "latency_ms": 2845.93
+    "thought": "Gemini phản hồi trực tiếp bằng văn bản (không cần gọi công cụ).",
+    "output": "Chào bạn! Hệ thống Y tế Vinmec là hệ thống y tế tư nhân hàng đầu tại Việt Nam, cung cấp đa dạng các dịch vụ khám chữa bệnh chất lượng cao theo tiêu chuẩn quốc tế JCI. \n\nDưới đây là **các dịch vụ chính** và **chuyên khoa mũi nhọn** tại Vinmec:\n\n---\n\n### 1. Các dịch vụ khám chữa bệnh chính\n* **Khám sức khỏe tổng quát & tầm soát bệnh lý:** Các gói khám tổng quát định kỳ, tầm soát ung thư, tầm soát bệnh lý tim mạch, đột quỵ, đường tiêu hóa... thiết kế riêng theo độ tuổi và nguy cơ.\n* **Khám & điều trị chuyên khoa:** Khám ngoại trú và điều trị nội trú với đội ngũ chuyên gia, trang thiết bị hiện đại.\n* **Cấp cứu & Hồi sức tích cực (ICU):** Phục vụ 24/7 với quy trình xử trí nhanh chóng, chuẩn xác.\n* **Chẩn đoán hình ảnh & Xét nghiệm di truyền:** Áp dụng công nghệ tiên tiến như MRI 3.0 Tesla, CT 512 dãy, xét nghiệm di truyền/y học chính xác.\n* **Trung tâm Hỗ trợ sinh sản (IVF):** Tư vấn, chẩn đoán và điều trị hiếm muộn với tỷ lệ thành công cao.\n* **Phẫu thuật & Phục hồi chức năng:** Phẫu thuật nội soi, phẫu thuật robot, phục hồi chức năng sau chấn thương/phẫu thuật.\n\n---\n\n### 2. Các chuyên khoa mũi nhọn nổi bật\n* **Tim mạch & Thần kinh:** Phẫu thuật tim, can thiệp tim mạch, điều trị đột quỵ, bệnh lý mạch máu.\n* **Ung bướu (Trung tâm Ung bướu Vinmec):** Điều trị đa mô thức (phẫu thuật, hóa trị, xạ trị, liệu pháp miễn dịch, ghép tế bào gốc).\n* **Tiêu hóa - Gan mật - Tụy:** Phẫu thuật và điều trị nội soi các bệnh lý đường tiêu hóa, gan mật.\n* **Sản phụ khoa & Nhi khoa:** Chăm sóc thai kỳ trọn gói, sinh con trọn gói, khám và điều trị nhi khoa, sơ sinh.\n* **Chấn thương chỉnh hình & Y học thể thao:** Thay khớp, phẫu thuật tái tạo dây chằng, điều trị chấn thương thể thao.\n* **Y học di truyền & Tế bào gốc:** Ứng dụng công nghệ tế bào gốc và liệu pháp gen trong điều trị.\n\n---\n\nNếu bạn cần tra cứu lịch làm việc của bác sĩ hoặc đặt lịch hẹn khám tại Vinmec, xin vui lòng cho mình biết **chuyên khoa**, **ngày khám** hoặc **chi nhánh Vinmec** bạn mong muốn nhé!",
+    "latency_ms": 10293.59
   },
   {
     "step": 1,
-    "query": "Hãy tra cứu thông tin học vụ của sinh viên SV2026001.",
+    "query": "Hãy tra cứu lịch làm việc của bác sĩ chuyên khoa Tiêu hóa tại Vinmec Times City ngày 15/03/2026.",
     "action_type": "TOOL_EXECUTION",
-    "tool_name": "academic_query",
+    "tool_name": "search_doctor_schedule",
     "arguments": {
-      "student_id": "SV2026001"
+      "specialty": "Tiêu hóa",
+      "date": "15/03/2026",
+      "location": "Vinmec Times City"
     },
-    "observation": {},
-    "latency_ms": 799.12
+    "observation": {
+      "status": "SUCCESS",
+      "data": {
+        "doctor_name": "TS.BS. Nguyễn Văn Bình",
+        "doctor_id": "DOC-TH-002",
+        "specialty": "Tiêu hóa",
+        "date": "15/03/2026",
+        "available_slots": [
+          "08:30",
+          "09:00",
+          "10:30",
+          "14:00"
+        ],
+        "location": "Vinmec Times City"
+      }
+    },
+    "latency_ms": 3288.74
   },
   {
     "step": 2,
-    "query": "Hãy tra cứu thông tin học vụ của sinh viên SV2026001.",
+    "query": "Hãy tra cứu lịch làm việc của bác sĩ chuyên khoa Tiêu hóa tại Vinmec Times City ngày 15/03/2026.",
     "action_type": "FINAL_ANSWER",
     "thought": "Tổng hợp kết quả từ MCP Server thành công.",
-    "output": "Chưa thể trả lời chi tiết do chưa nhận được dữ liệu từ MCP Server (hãy hoàn thành TODO 2.1).",
+    "output": "Bác sĩ TS.BS. Nguyễn Văn Bình (Mã: DOC-TH-002) thuộc khoa Tiêu hóa tại Vinmec Times City. Lịch trống ngày 15/03/2026: 08:30, 09:00, 10:30, 14:00.",
+    "latency_ms": 10.0
+  },
+  {
+    "step": 1,
+    "query": "Đặt lịch khám với TS.BS. Nguyễn Văn Bình (mã DOC-TH-002) lúc 09:00 ngày 15/03/2026 cho bệnh nhân Lê Thanh Tình.",
+    "action_type": "TOOL_EXECUTION",
+    "tool_name": "book_medical_appointment",
+    "arguments": {
+      "doctor_id": "DOC-TH-002",
+      "date": "15/03/2026",
+      "time_slot": "09:00",
+      "patient_name": "Lê Thanh Tình"
+    },
+    "observation": {
+      "status": "SUCCESS",
+      "message": "Đặt lịch thành công cho bệnh nhân Lê Thanh Tình với bác sĩ DOC-TH-002 vào 09:00 ngày 15/03/2026."
+    },
+    "latency_ms": 3585.56
+  },
+  {
+    "step": 2,
+    "query": "Đặt lịch khám với TS.BS. Nguyễn Văn Bình (mã DOC-TH-002) lúc 09:00 ngày 15/03/2026 cho bệnh nhân Lê Thanh Tình.",
+    "action_type": "FINAL_ANSWER",
+    "thought": "Tổng hợp kết quả từ MCP Server thành công.",
+    "output": "Đặt lịch thành công cho bệnh nhân Lê Thanh Tình với bác sĩ DOC-TH-002 vào 09:00 ngày 15/03/2026.",
+    "latency_ms": 10.0
+  },
+  {
+    "step": 1,
+    "query": "Tôi bị đau dạ dày và ợ chua, hãy tra bác sĩ chuyên khoa phù hợp tại Vinmec Times City ngày 15/03/2026 và đặt lịch ca sáng giúp bệnh nhân Lê Thanh Tình.",
+    "action_type": "TOOL_EXECUTION",
+    "tool_name": "search_doctor_schedule",
+    "arguments": {
+      "location": "Vinmec Times City",
+      "specialty": "Tiêu hóa",
+      "date": "15/03/2026"
+    },
+    "observation": {
+      "status": "SUCCESS",
+      "data": {
+        "doctor_name": "TS.BS. Nguyễn Văn Bình",
+        "doctor_id": "DOC-TH-002",
+        "specialty": "Tiêu hóa",
+        "date": "15/03/2026",
+        "available_slots": [
+          "08:30",
+          "09:00",
+          "10:30",
+          "14:00"
+        ],
+        "location": "Vinmec Times City"
+      }
+    },
+    "latency_ms": 4607.53
+  },
+  {
+    "step": 2,
+    "query": "Tôi bị đau dạ dày và ợ chua, hãy tra bác sĩ chuyên khoa phù hợp tại Vinmec Times City ngày 15/03/2026 và đặt lịch ca sáng giúp bệnh nhân Lê Thanh Tình.",
+    "action_type": "FINAL_ANSWER",
+    "thought": "Tổng hợp kết quả từ MCP Server thành công.",
+    "output": "Bác sĩ TS.BS. Nguyễn Văn Bình (Mã: DOC-TH-002) thuộc khoa Tiêu hóa tại Vinmec Times City. Lịch trống ngày 15/03/2026: 08:30, 09:00, 10:30, 14:00.",
+    "latency_ms": 10.0
+  },
+  {
+    "step": 1,
+    "query": "Hãy tra cứu lịch làm việc của bác sĩ có mã DOC-9999999 ngày 15/03/2026.",
+    "action_type": "TOOL_EXECUTION",
+    "tool_name": "search_doctor_schedule",
+    "arguments": {
+      "date": "15/03/2026",
+      "doctor_id": "DOC-9999999"
+    },
+    "observation": {
+      "status": "NOT_FOUND",
+      "message": "Không tìm thấy bác sĩ có mã 'DOC-9999999' trong hệ thống Vinmec."
+    },
+    "latency_ms": 4619.71
+  },
+  {
+    "step": 2,
+    "query": "Hãy tra cứu lịch làm việc của bác sĩ có mã DOC-9999999 ngày 15/03/2026.",
+    "action_type": "FINAL_ANSWER",
+    "thought": "Tổng hợp kết quả từ MCP Server thành công.",
+    "output": "Không tìm thấy bác sĩ có mã 'DOC-9999999' trong hệ thống Vinmec.",
     "latency_ms": 10.0
   }
 ]
